@@ -71,10 +71,6 @@ int abrirArchivo (char *direccion){
             mover(1, 0);
         }
         move(posY, posX);
-        posY = 2;
-        posX = 1;
-        x = 0;
-        y = 0; 
         imprimeTexto();
         refresh();    
 
