@@ -1,0 +1,1 @@
+/* Funciones que usa el editor */
