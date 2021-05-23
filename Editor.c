@@ -1,62 +1,91 @@
 /* Interfaz editor*/
 #include "FuncEditor.c"
 
-void finalizar(int snum){
-		exit(0);
+/* Funcion dedicada a la lectura del archivo y almacenamiento en memoria*/
+void lectura(){
+    FILE *archivo = fopen(direccionArchivo, "r");
+    lineasArchivo = 0;
+
+    while(feof(archivo) == 0){ // Recorremos cada estructura del archivo
+        fgets(data[lineasArchivo], 10000, archivo);
+        lineasArchivo++;
+    }
+    fclose(archivo);
 }
+
+/* Función dedicada a imprimir todo el texto en pantalla*/
+void imprimeTexto(){
+    move(posY, posX);
+
+    for(int espY = posY; espY<= maxY-5; espY++){ // No se debe desbordar horizontalmente
+        /* Obtenemos una copia*/
+        char *aux = data[y + (espY-posY)];
+
+        // Para dejar el puntero en la posicion correcta en x (para scroll)
+        for(int i=0; i <x; i++){
+            aux++;
+        }
+
+        for(int espX = posX; espX <= maxX-2; espX++){ // No se debe desbordar verticalmente
+
+            if(*aux != 00){
+                move(espY, espX);
+                printw("%c", *aux);
+                aux++;
+            }            
+        }
+    }
+}
+
 
 int abrirArchivo (char *direccion){
+    /* Creamos ventana y sus elementos*/
     crearVentana();
     mostrarHeaderFooter();
-    posX = 5;
-    posY = 5;
-    /*Compartiendo las coordeanadas del mono entre los procesos*/
-	int *xM = shmat(shmget(ftok("Prac8",'k'), sizeof(int),IPC_CREAT|0600), 0, 0);
-	int *yM = shmat(shmget(ftok("Prac8",'k'), sizeof(int),IPC_CREAT|0600), 0, 0);
+    /* Donde partira a imprimir respecto a la ventana*/
+    posX = 1;
+    posY = 2;
+    /* Donde partira a imprimir respecto al archivo*/
+    x = 1;
+    y = 0;
 
-    pid_t pid;
-	pid = fork();
-	if(pid == 0){ // Proceso encargado de dibujar 
-		*xM = posX;
-		*yM = posY;
-		while (1){
-			posX = *xM;	
-            //posY = *yM;	
-		}		
-	exit(0);	
-	}
-	
-	else{ // Proceso encargado de detectar movimiento del cursor y el tipeado
-		while(1){
-            
-			//noecho();        
-    		cbreak();
-    		signal(SIGTERM, finalizar);
-			int key = getch();
-			
-			if(key == IZQUIERDA){	//Si presiona la tecla "a"
-				posX = *xM;
-				mover(-2);
-			}
-			else if(key == DERECHA){	//Si presiona la tecla "d"
-				posX = *xM;
-				mover(2);
-			}
-			else{	//Si no se mueve a la derecha o izquierda imprime lo siguiente, esto se puede cambiar para que no imprima nada o no se mueva
-					//Lo hice para ver que el movimiento se haga correctamente
-				printw(".");
-			}
-            //printw("%d + %d", posX, posY);
-			*xM = posX;
+    /* Leemos y mostramos el archivo */
+    strcpy(direccionArchivo, direccion);
+    lectura ();
+    imprimeTexto();
 
-		}			
-	}
+    int flag = 1;
+    while(flag){
+        move(posY, posX);
+
+        noecho();
+        keypad(stdscr, true);
+        int key = getch();
+        //printw(" l%dl", key);
+
+        if (key == KEY_LEFT){
+            mover(-1, 0);
+            comprobarScroll(-1, 0);
+        }
+        else if (key == KEY_RIGHT){
+            mover(1, 0);
+        }
+        move(posY, posX);
+        posY = 2;
+        posX = 1;
+        x = 0;
+        y = 0; 
+        imprimeTexto();
+        refresh();    
+
+
+    }
+    getch();
+    endwin();
     return 0;
 }
-int main(){
-    abrirArchivo("sd");   
 
-    getch();         
-    endwin();         
+int main(){
+    abrirArchivo("lolo/Ejemplo2.txt");   
     return 0; 
 }

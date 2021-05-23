@@ -2,6 +2,7 @@
 # include <ncurses.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <string.h>
 # include <pthread.h> 
 # include <unistd.h> 
 # include <time.h>
@@ -12,10 +13,7 @@
 /* Teclas para controlar al mono*/
 # define ESCAPE 27
 # define ENTER 10
-# define IZQUIERDA 97
-# define DERECHA 100
-# define ARRIBA 119
-# define ABAJO 115
+# define DELETE 263
 
 /* Declaracion de las vars principales */
 WINDOW *Editor;  
@@ -24,8 +22,12 @@ WINDOW *Editor;
 int maxX;
 int maxY;
 
-/* Variables para controlar al cursor*/
-int posX, posY; 
+/* Variables para controlar al cursor y la informacion del texto*/
+int posX, posY; // Posicion del cursor
+int x, y; // Posicion del scroll horizontal y vertical 
+char *direccionArchivo;
+char *data[100]; /* 100 lineras por defecto*/
+int lineasArchivo; // Las líneas que tendrá el archivo
 
 /* c�digo implementaci�n de todas las funciones */
 void crearVentana(){
@@ -43,6 +45,13 @@ void crearVentana(){
     // Obtenemos resolución en espacios y renglones
 	maxY = getmaxy(Editor);
 	maxX = getmaxx(Editor); 
+
+    // Declaramos el arreglo para la lectura de todo el archivo
+    for(int i=0; i < 100; i++){
+        data[i] = (char*)malloc(10000*sizeof(char)); 
+    }
+    direccionArchivo = (char *) malloc(100*sizeof(char));
+
     posX = (maxX/2)-2;
     posY = maxY-6;
 }
@@ -82,17 +91,21 @@ int mostrarHeaderFooter(){
     return 0;
 }
 
-void mover(int posicion){
-    if((posX + posicion >= 0) && (posX + posicion <= maxX-5)) // limita el movimiento del mono para que no se salga del borde 
-        posX = posX + posicion; // Mueve la posicion en n espacios dados
+void mover(int posicionX, int posicionY){
+    if((posX + posicionX >= 1) && (posX + posicionX <= maxX-2)) // limita el movimiento del mono para que no se salga del borde 
+        posX = posX + posicionX; // Mueve la posicionX en n espacios dados
+
+    if((posY + posicionY >= 2) && (posY + posicionY <= maxY-5)) // limita el movimiento del mono para que no se salga del borde 
+        posY = posY + posicionY; // Mueve la posicionX en n espacios dados    
 }
 
-void dibujar(){
-    /* Pintura del monito */
-    attron(COLOR_PAIR(2));    
-    move(posY, posX);
-    printw("  O");
-
-    refresh();
+void comprobarScroll(int horizontal, int vertical){
+    if(posX + horizontal < 1){ // Se dara scroll a la izquierda
+        if(x > 0){
+            x--;
+        }
+    }
+    else if(posX + horizontal >= maxX-1){ // Se dara scroll a la izquierda
+        
+    }
 }
-
