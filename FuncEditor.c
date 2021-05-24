@@ -219,16 +219,17 @@ void eliminarSalto(){
     char linea_nueva[10000] = "";  // Crea una línea para después reasignarla al siguiente renglon
 
     char aux[100000];
-    strcpy(aux, data[(posY-2)+y]); // Mantenemos en memoria la linea antes del cambio
+    strcpy(aux, data[(posY-2)+y]-1); // Mantenemos en memoria la linea antes del cambio
 
+    
+    // Algoritmo de concatenación de lineas por eliminación de salto  
+    
+    strcpy(data[(posY-2)+y-1], data[(posY-2)+y]);
+    
     /*subimos el resto de lineas*/
     subirLineas((posY-2)+ y);
     lineasArchivo--;
 
-    // Algoritmo de concatenación de lineas por eliminación de salto  
-    
-    strcpy(data[(posY-2)+y-1], data[(posY-2)+y]);
-    strcpy(data[(posY-2)+y], "");
     
     // Hacemos retorno de carro en la siguiente linea
     if( (posY-2)+y + 1 < lineasArchivo){  // Comprueba que la linea siguiente sí sea una linea existente              
