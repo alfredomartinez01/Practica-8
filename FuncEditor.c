@@ -109,7 +109,7 @@ void subirLineas(int linea){
     }
 }
 void bajarLineas(int linea){
-    for(int i = lineasArchivo; i >= linea; i--){
+    for(int i = lineasArchivo; i > linea; i--){
         strcpy(data[i], data[i-1]);
     }
 }
@@ -210,41 +210,30 @@ void insertarCaracter(char caracter){
 }
 
 void saltoLinea(){
-    char linea_original[100000] = "";  // Crea una línea para después reasignarla a la original
-    char linea_nueva[100000] = "";  // Crea una línea para después reasignarla al siguiente renglon
+    char linea_original[10000] = "";  // Crea una línea para después reasignarla a la original
+    char linea_nueva[10000] = "";  // Crea una línea para después reasignarla al siguiente renglon
 
     char *aux = (char *)malloc(10000*sizeof(char));
     strcpy(aux, data[(posY-2)+y]); // Mantenemos en memoria la linea antes del cambio
 
     /*Bajamos el resto de lineas*/
     lineasArchivo++;
-    bajarLineas((posY-2)+y+1);
-
-    /* Algoritmo de insersión del caracter en la posición del cursor sobre la cadena ((posX-1)+x)*/
-    int i, j = 0;
-    while(*aux != '\0'){
-        if(i == (posX-1)+x){
-            linea_original[i] = 10;
-            aux++;
-            
-            while(*aux != '\0'){
-                linea_nueva[j] = *aux;        
-                aux++;
-                j++; 
-            }
-            break;
-        }
-        linea_original[i] = *aux;        
+    bajarLineas((posY-2)+ y+1);
+    strcpy(data[(posY-2)+ y+1], "");
+    
+    // Algoritmo de insersión del caracter en la posición del cursor sobre la cadena ((posX-1)+x)
+    int j =0;
+    for(int i=0; i <= tamanoLinea((posY-2)+y); i++){
+        linea_nueva[i] = *aux;      
         aux++;
-        i++;        
     }
-    aux--;
-    strcpy(data[(posY-2)+y], linea_original);
+    move(maxY-2, maxX-9);
+    printw("%s", linea_nueva);
+    move(maxY-3, maxX-9);
+    printw("%d, %d", posY, posX);
+    //strcpy(data[(posY-2)+y], linea_original); 
     strcpy(data[(posY-2)+y + 1], linea_nueva);
 
-    if( ((posX-1)+x) + 1 <= tamanoLinea((posY-2)+y)){ // Comprueba que el tamaño de linea permita moverlo
-        mover(1, 0);
-        comprobarScroll(1, 0);
-    }
+    
 }
 

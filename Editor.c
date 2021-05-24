@@ -151,8 +151,7 @@ int abrirArchivo (char *direccion){
         }
         
         else if (key == 10){ // Tecla enter salto de linea
-            saltoLinea();
-            
+            saltoLinea();            
         }
 
         else if(key = 27){ // Escritura de las lineas que se tienen en memoria
@@ -165,6 +164,7 @@ int abrirArchivo (char *direccion){
             escritura();
             lectura();
         }
+
         imprimeTexto();
         refresh();
     }
