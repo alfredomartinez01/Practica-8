@@ -92,9 +92,21 @@ int mostrarHeaderFooter(){
     return 0;
 }
 
-void mover(int posicionX, int posicionY){
+int tamanoLinea(int linea){ /* Algoritmo para conoces cuantos caracteres tiene la linea */
+    char *aux = (char *)malloc(10000*sizeof(char));
+    strcpy(aux, data[linea]); // Mantenemos en memoria la linea antes del cambio
+    int i = 0;
+    while(*aux != '\0' && *aux != '\n'){
+        i++;
+        aux++;
+    }
+    return i;
+}
+
+int mover(int posicionX, int posicionY){
     if((posX + posicionX >= 1) && (posX + posicionX <= maxX-2)) // limita el movimiento del mono para que no se salga del borde 
-        posX = posX + posicionX; // Mueve la posicionX en n espacios dados
+        posX = posX + posicionX; // Mueve la posicionX en n espacios dados        
+    
 
     if((posY + posicionY >= 2) && (posY + posicionY <= maxY-5)) // limita el movimiento del mono para que no se salga del borde 
         posY = posY + posicionY; // Mueve la posicionX en n espacios dados    
@@ -121,5 +133,46 @@ void comprobarScroll(int horizontal, int vertical){
         }
         
     }
+}
 
+void eliminarCaracter(){   
+
+    char nueva_linea[100000] ="";  // Crea una línea para después reasignarla a la original
+    char *aux = (char *)malloc(10000*sizeof(char));
+    strcpy(aux, data[(posY-2)+y]); // Mantenemos en memoria la linea antes del cambio
+    mover(-1, 0);
+    
+    /* Algoritmo de eliminación del caracter de la posición del cursor sobre la cadena ((posX-1)+x)*/
+    int i = 0;
+    while(*aux != '\0'){
+        if(i == (posX-1)+x){
+            aux++;
+        }
+        nueva_linea[i] = *aux;
+        aux++;
+        i++;
+    }
+    strcpy(data[(posY-2)+y], nueva_linea);
+}
+
+void insertarCaracter(char caracter){   
+
+    char nueva_linea[100000] ="";  // Crea una línea para después reasignarla a la original
+    char *aux = (char *)malloc(10000*sizeof(char));
+    strcpy(aux, data[(posY-2)+y]); // Mantenemos en memoria la linea antes del cambio
+
+    
+    /* Algoritmo de insersión del caracter en la posición del cursor sobre la cadena ((posX-1)+x)*/
+    int i = 0;
+    while(*aux != '\0'){
+        if(i == (posX-1)+x){
+            nueva_linea[i] = caracter;
+            i++;
+        }
+        nueva_linea[i] = *aux;
+        aux++;
+        i++;
+    }
+    strcpy(data[(posY-2)+y], nueva_linea);
+    mover(1, 0);    
 }
