@@ -231,32 +231,29 @@ void saltoLinea(){
     char linea_original[10000] = "";  // Crea una línea para después reasignarla a la original
     char linea_nueva[10000] = "";  // Crea una línea para después reasignarla al siguiente renglon
 
-    char *aux = (char *)malloc(10000*sizeof(char));
+    char aux[100000];
     strcpy(aux, data[(posY-2)+y]); // Mantenemos en memoria la linea antes del cambio
 
     /*Bajamos el resto de lineas*/
     lineasArchivo++;
     bajarLineas((posY-2)+ y+1);
-    strcpy(data[(posY-2)+y], "");
     strcpy(data[(posY-2)+y + 1], "");
-    
-    // Algoritmo de insersión del caracter en la posición del cursor sobre la cadena ((posX-1)+x)
-    int j =0;
-    for(int i=0; i <= (posX-2)+x; i++){
-        linea_original[i] = *aux;      
-        aux++;
-    }
-    for(int i=(posX-2)+x; i <= tamanoLinea((posY-2)+ y); i++){
-        linea_nueva[i] = *aux;      
-        aux++;
-    }
-    move(maxY-2, maxX-9);
-    printw("%s", linea_original);
-    move(maxY-3, maxX-9);
-    printw("%c: %d, %d", *aux, posY, posX);
-    //strcpy(data[(posY-2)+y], linea_original); 
-    strcpy(data[(posY-2)+y], linea_original);
 
+    // Algoritmo de insersión del caracter en la posición del cursor sobre la cadena ((posX-1)+x)
+    for(int i=0; i <= (posX-2)+x; i++){
+        linea_original[i] = aux[i];     
+    }
+    int j= 0;
+    for(int i= (posX-2)+x +1; i <= tamanoLinea((posY-2)+ y); i++){
+        linea_nueva[j] = aux[i];    
+        j++;
+    }
+
+    move(10, 10);
+    printw("%s %d", linea_nueva, tamanoLinea((posY-2)+ y));
+
+    strcpy(data[(posY-2)+y], linea_original);
+    strcpy(data[(posY-2)+y+1], linea_nueva);
     
 }
 
