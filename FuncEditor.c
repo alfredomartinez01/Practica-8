@@ -12,7 +12,6 @@
 
 /* Teclas para controlar al mono*/
 # define ESCAPE 27
-# define ENTER 10
 # define DELETE 263
 
 /* Declaracion de las vars principales */
@@ -51,9 +50,6 @@ void crearVentana(){
         data[i] = (char*)malloc(10000*sizeof(char)); 
     }
     direccionArchivo = (char *) malloc(100*sizeof(char));
-
-    posX = (maxX/2)-2;
-    posY = maxY-6;
 }
 
 /* Función encargada de mostrar el header y el footer del editor*/
@@ -147,32 +143,54 @@ void comprobarScroll(int horizontal, int vertical){
 }
 
 void eliminarCaracter(){   
-    if((posX-1)+x > 0){
-        char nueva_linea[100000] ="";  // Crea una línea para después reasignarla a la original
-        char *aux = (char *)malloc(10000*sizeof(char));
-        strcpy(aux, data[(posY-2)+y]); // Mantenemos en memoria la linea antes del cambio
-        mover(-1, 0);
-        
-        /* Algoritmo de eliminación del caracter de la posición del cursor sobre la cadena ((posX-1)+x)*/
-        int i = 0;
-        while(*aux != '\0'){
-            if(i == (posX-1)+x){
+    if((posX-1)+x > 0){ // Si hay algo que eliminar
+        if(posX-1 > 0){ // Si el cursor está adelante de la posición inicial
+            char nueva_linea[100000] ="";  // Crea una línea para después reasignarla a la original
+            char *aux = (char *)malloc(10000*sizeof(char));
+            strcpy(aux, data[(posY-2)+y]); // Mantenemos en memoria la linea antes del cambio
+            mover(-1, 0);
+            
+            /* Algoritmo de eliminación del caracter de la posición del cursor sobre la cadena ((posX-1)+x)*/
+            int i = 0;
+            while(*aux != '\0'){
+                if(i == (posX-1)+x){
+                    aux++;
+                }
+                nueva_linea[i] = *aux;
                 aux++;
+                i++;
             }
-            nueva_linea[i] = *aux;
-            aux++;
-            i++;
+            strcpy(data[(posY-2)+y], nueva_linea);
         }
-        strcpy(data[(posY-2)+y], nueva_linea);
+        else{ // Si el cursor está en el borde izquierdo
+            char nueva_linea[100000] ="";  // Crea una línea para después reasignarla a la original
+            char *aux = (char *)malloc(10000*sizeof(char));
+            strcpy(aux, data[(posY-2)+y]); // Mantenemos en memoria la linea antes del cambio
+            posX -=1 ;
+            
+            /* Algoritmo de eliminación del caracter de la posición del cursor sobre la cadena ((posX-1)+x)*/
+            int i = 0;
+            while(*aux != '\0'){
+                if(i == (posX-1)+x){
+                    aux++;
+                }
+                nueva_linea[i] = *aux;
+                aux++;
+                i++;
+            }
+            posX+=1;
+            strcpy(data[(posY-2)+y], nueva_linea);
+            comprobarScroll(-1, 0);
+        }
+        
     }
     else{
-        if (lineasArchivo > 1 && tamanoLinea((posY-2)+y-1) == 0){
+        if (lineasArchivo > 1 && tamanoLinea((posY-2)+y-1) == 0){ // Para subir el cursor
             subirLineas((posY-2)+y-1);
             lineasArchivo--;
             mover(0, -1);
             comprobarScroll(0, -1);
-        }
-            
+        }       
     }
 }
 
@@ -219,20 +237,25 @@ void saltoLinea(){
     /*Bajamos el resto de lineas*/
     lineasArchivo++;
     bajarLineas((posY-2)+ y+1);
-    strcpy(data[(posY-2)+ y+1], "");
+    strcpy(data[(posY-2)+y], "");
+    strcpy(data[(posY-2)+y + 1], "");
     
     // Algoritmo de insersión del caracter en la posición del cursor sobre la cadena ((posX-1)+x)
     int j =0;
-    for(int i=0; i <= tamanoLinea((posY-2)+y); i++){
+    for(int i=0; i <= (posX-2)+x; i++){
+        linea_original[i] = *aux;      
+        aux++;
+    }
+    for(int i=(posX-2)+x; i <= tamanoLinea((posY-2)+ y); i++){
         linea_nueva[i] = *aux;      
         aux++;
     }
     move(maxY-2, maxX-9);
-    printw("%s", linea_nueva);
+    printw("%s", linea_original);
     move(maxY-3, maxX-9);
-    printw("%d, %d", posY, posX);
+    printw("%c: %d, %d", *aux, posY, posX);
     //strcpy(data[(posY-2)+y], linea_original); 
-    strcpy(data[(posY-2)+y + 1], linea_nueva);
+    strcpy(data[(posY-2)+y], linea_original);
 
     
 }
