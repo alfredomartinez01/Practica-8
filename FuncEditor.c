@@ -142,6 +142,104 @@ void comprobarScroll(int horizontal, int vertical){
     }
 }
 
+void insertarCaracter(char caracter){   
+
+    char nueva_linea[100000] = "";  // Crea una línea para después reasignarla a la original
+    char *aux = (char *)malloc(10000*sizeof(char));
+    strcpy(aux, data[(posY-2)+y]); // Mantenemos en memoria la linea antes del cambio
+
+    
+    /* Algoritmo de insersión del caracter en la posición del cursor sobre la cadena ((posX-1)+x)*/
+    if(tamanoLinea((posY-2)+y) > 0){
+        int i = 0;
+        while(*aux != '\0'){
+            if(i == (posX-1)+x){
+                nueva_linea[i] = caracter;
+                i++;
+            }
+            nueva_linea[i] = *aux;        
+            aux++;
+            i++;        
+        }
+        aux--;
+    }
+    else{
+        nueva_linea[0] = caracter;
+        nueva_linea[1] = '\0';
+    }
+    
+    strcpy(data[(posY-2)+y], nueva_linea);
+    
+    if( ((posX-1)+x) + 1 <= tamanoLinea((posY-2)+y)){ // Comprueba que el tamaño de linea permita moverlo
+        mover(1, 0);
+        comprobarScroll(1, 0);
+    }
+}
+
+void saltoLinea(){
+    char linea_original[10000] = "";  // Crea una línea para después reasignarla a la original
+    char linea_nueva[10000] = "";  // Crea una línea para después reasignarla al siguiente renglon
+
+    char aux[100000];
+    strcpy(aux, data[(posY-2)+y]); // Mantenemos en memoria la linea antes del cambio
+
+    /*Bajamos el resto de lineas*/
+    lineasArchivo++;
+    bajarLineas((posY-2)+ y+1);
+    strcpy(data[(posY-2)+y + 1], "");
+
+    // Algoritmo de insersión de salto de linea en la posicion del cursor (posX-2)+x
+    // Partimos en dos
+    for(int i=0; i <= (posX-2)+x; i++){ // Para obtener la primer linea
+        linea_original[i] = aux[i];   
+        if(i == (posX-2)+x){
+            linea_original[i+1] = '\n';
+        }  
+    }
+    int j= 0;
+    for(int i= (posX-2)+x +1; i <= tamanoLinea((posY-2)+ y); i++){ // Para obtener la segunda linea
+        linea_nueva[j] = aux[i];    
+        j++;
+    }
+    
+    strcpy(data[(posY-2)+y], linea_original);
+    strcpy(data[(posY-2)+y+1], linea_nueva);
+    
+    // Hacemos retorno de carro en la siguiente linea
+    if( (posY-2)+y + 1 < lineasArchivo){  // Comprueba que la linea siguiente sí sea una linea existente              
+        mover(0, 1);
+        comprobarScroll(0, 1);
+        x = 0;
+        posX = 1;        
+    }
+}
+
+void eliminarSalto(){
+    char linea_original[10000] = "";  // Crea una línea para después reasignarla a la original
+    char linea_nueva[10000] = "";  // Crea una línea para después reasignarla al siguiente renglon
+
+    char aux[100000];
+    strcpy(aux, data[(posY-2)+y]); // Mantenemos en memoria la linea antes del cambio
+
+    /*subimos el resto de lineas*/
+    subirLineas((posY-2)+ y);
+    lineasArchivo--;
+
+    // Algoritmo de concatenación de lineas por eliminación de salto  
+    
+    strcpy(data[(posY-2)+y-1], data[(posY-2)+y]);
+    strcpy(data[(posY-2)+y], "");
+    
+    // Hacemos retorno de carro en la siguiente linea
+    if( (posY-2)+y + 1 < lineasArchivo){  // Comprueba que la linea siguiente sí sea una linea existente              
+        mover(0, 1);
+        comprobarScroll(0, 1);
+        x = 0;
+        posX = 1;        
+    }
+}
+
+
 void eliminarCaracter(){   
     if((posX-1)+x > 0){ // Si hay algo que eliminar
         if(posX-1 > 0){ // Si el cursor está adelante de la posición inicial
@@ -185,75 +283,18 @@ void eliminarCaracter(){
         
     }
     else{
-        if (lineasArchivo > 1 && tamanoLinea((posY-2)+y-1) == 0){ // Para subir el cursor
-            subirLineas((posY-2)+y-1);
-            lineasArchivo--;
-            mover(0, -1);
-            comprobarScroll(0, -1);
-        }       
-    }
-}
-
-void insertarCaracter(char caracter){   
-
-    char nueva_linea[100000] = "";  // Crea una línea para después reasignarla a la original
-    char *aux = (char *)malloc(10000*sizeof(char));
-    strcpy(aux, data[(posY-2)+y]); // Mantenemos en memoria la linea antes del cambio
-
-    
-    /* Algoritmo de insersión del caracter en la posición del cursor sobre la cadena ((posX-1)+x)*/
-    if(tamanoLinea((posY-2)+y) > 0){
-        int i = 0;
-        while(*aux != '\0'){
-            if(i == (posX-1)+x){
-                nueva_linea[i] = caracter;
-                i++;
-            }
-            nueva_linea[i] = *aux;        
-            aux++;
-            i++;        
+        if(posY-2 > 0 || y > 0){ // Debe haber algun scroll hacia abajo o no ser la primera linea
+            if (lineasArchivo > 1 && tamanoLinea((posY-2)+y-1) == 0){ // Para subir el cursor
+                subirLineas((posY-2)+y-1);
+                lineasArchivo--;
+                mover(0, -1);
+                comprobarScroll(0, -1);
+            }   
+            else if (lineasArchivo > 1 && tamanoLinea((posY-2)+y-1) > 0){ // Para subir el texto 
+                // Debemos eliminar el salto de linea y juntar las lineas
+                eliminarSalto();
+            } 
         }
-        aux--;
-    }
-    else{
-        nueva_linea[0] = caracter;
-        nueva_linea[1] = '\n';
-    }
-    
-    strcpy(data[(posY-2)+y], nueva_linea);
-    if( ((posX-1)+x) + 1 <= tamanoLinea((posY-2)+y)){ // Comprueba que el tamaño de linea permita moverlo
-        mover(1, 0);
-        comprobarScroll(1, 0);
+            
     }
 }
-
-void saltoLinea(){
-    char linea_original[10000] = "";  // Crea una línea para después reasignarla a la original
-    char linea_nueva[10000] = "";  // Crea una línea para después reasignarla al siguiente renglon
-
-    char aux[100000];
-    strcpy(aux, data[(posY-2)+y]); // Mantenemos en memoria la linea antes del cambio
-
-    /*Bajamos el resto de lineas*/
-    lineasArchivo++;
-    bajarLineas((posY-2)+ y+1);
-    strcpy(data[(posY-2)+y + 1], "");
-
-    // Algoritmo de insersión del caracter en la posición del cursor sobre la cadena ((posX-1)+x)
-    for(int i=0; i <= (posX-2)+x; i++){
-        linea_original[i] = aux[i];     
-    }
-    int j= 0;
-    for(int i= (posX-2)+x +1; i <= tamanoLinea((posY-2)+ y); i++){
-        linea_nueva[j] = aux[i];    
-        j++;
-    }
-
-    move(10, 10);
-    printw("%s %d", linea_nueva, tamanoLinea((posY-2)+ y));
-
-    strcpy(data[(posY-2)+y], linea_original);
-    strcpy(data[(posY-2)+y+1], linea_nueva);
-    
-}
-
