@@ -233,8 +233,8 @@ void eliminarSalto(){
     
     // Hacemos retorno de carro en la siguiente linea
     if( (posY-2)+y + 1 < lineasArchivo){  // Comprueba que la linea siguiente sí sea una linea existente              
-        mover(0, 1);
-        comprobarScroll(0, 1);
+        mover(0, -1);
+        comprobarScroll(0, -1);
         x = 0;
         posX = 1;        
     }
