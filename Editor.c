@@ -70,8 +70,8 @@ int abrirArchivo (char *direccion){
 
         noecho();
         keypad(stdscr, true);
-        int key = getch();
-        //move(10, 10);
+        unsigned key = getch();
+        //move(maxY-2, maxY-9);
         //printw("%d", key);
 
         /* NOTA:(posX-1)+x  es la posicion sobre el cadena de caracteres respecto al cursor en x
@@ -102,7 +102,7 @@ int abrirArchivo (char *direccion){
             }
         }
         else if (key == KEY_DOWN){ // Flecha abajo
-            if( (posY-2)+y + 1 < lineasArchivo-1){  // Comprueba que la linea siguiente sí sea una linea existente              
+            if( (posY-2)+y + 1 < lineasArchivo){  // Comprueba que la linea siguiente sí sea una linea existente              
                 mover(0, 1);
                 comprobarScroll(0, 1);
 
@@ -118,9 +118,7 @@ int abrirArchivo (char *direccion){
         }
         else if (key == 262){ // Tecla inicio (retorno de carro)
             x = 0;
-            y = 0;
             posX = 1;
-            posY = 2;
         }
         else if (key == KEY_END){ // Tecla fin (se va al final)
             while( ((posX-1)+x) + 1 <= tamanoLinea((posY-2)+y)){
@@ -132,10 +130,31 @@ int abrirArchivo (char *direccion){
             if(tamanoLinea((posY-2)+y) > 0){ // comprueba que sí haya caracteres que eliminar, para evitar conflictos con el cursor
                 eliminarCaracter();
             }
+            else{
+                if (lineasArchivo > 1){
+                    subirLineas((posY-2)+y);
+                    lineasArchivo--;
+
+                    mover(0, -1);
+                    comprobarScroll(0, -1);
+                    x = 0;
+                    posX = 1;
+                    while( ((posX-1)+x) + 1 <= tamanoLinea((posY-2)+y)){ // Se va al final de la linea
+                        mover(1, 0);
+                        comprobarScroll(1, 0);
+                    }
+                }
+            }
         }
         else if (key >= 32 && key<= 255){ // Algun caracter a insertar
             insertarCaracter(key);
         }
+        
+        else if (key == 10){ // Tecla enter salto de linea
+            saltoLinea();
+            
+        }
+
         else if(key = 27){ // Escritura de las lineas que se tienen en memoria
             // Declaramos el arreglo para la lectura de todo el archivo
             for(int i=0; i < 100; i++){
