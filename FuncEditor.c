@@ -165,10 +165,11 @@ void insertarCaracter(char caracter){
     }
     else{
         nueva_linea[0] = caracter;
-        nueva_linea[1] = '\0';
+        nueva_linea[1] = '\n';
     }
-    
     strcpy(data[(posY-2)+y], nueva_linea);
+    
+
     
     if( ((posX-1)+x) + 1 <= tamanoLinea((posY-2)+y)){ // Comprueba que el tamaño de linea permita moverlo
         mover(1, 0);
@@ -215,41 +216,41 @@ void saltoLinea(){
 }
 
 void eliminarSalto(){
-    char linea_original[10000] = "";  // Crea una línea para después reasignarla a la original
-    char linea_nueva[10000] = "";  // Crea una línea para después reasignarla al siguiente renglon
-
     char aux[100000];
-    strcpy(aux, data[(posY-2)+y]-1); // Mantenemos en memoria la linea antes del cambio
+    strcpy(aux, data[(posY-2)+y-1]); // Mantenemos en memoria la linea antes del cambio
+    int aux_tam = tamanoLinea((posY-2)+y-1);
 
-    
     // Algoritmo de concatenación de lineas por eliminación de salto  
-    
-    strcpy(data[(posY-2)+y-1], data[(posY-2)+y]);
+    strcat(aux, data[(posY-2)+y]);
+
+    strcpy(data[(posY-2)+y-1], aux);
+   
     
     /*subimos el resto de lineas*/
-    subirLineas((posY-2)+ y);
-    lineasArchivo--;
+    subirLineas((posY-2)+y);
+    lineasArchivo--;    
 
-    
-    // Hacemos retorno de carro en la siguiente linea
-    if( (posY-2)+y + 1 < lineasArchivo){  // Comprueba que la linea siguiente sí sea una linea existente              
-        mover(0, -1);
-        comprobarScroll(0, -1);
-        x = 0;
-        posX = 1;        
+    // Hacemos un recorrido hasta el final de la linea anterior
+    mover(0, -1);
+    comprobarScroll(0, -1);
+
+    while( ((posX-1)+x) + 1 <=  aux_tam){
+        mover(1, 0);
+        comprobarScroll(1, 0);
     }
 }
 
 
 void eliminarCaracter(){   
     if((posX-1)+x > 0){ // Si hay algo que eliminar
+        
         if(posX-1 > 0){ // Si el cursor está adelante de la posición inicial
             char nueva_linea[100000] ="";  // Crea una línea para después reasignarla a la original
             char *aux = (char *)malloc(10000*sizeof(char));
             strcpy(aux, data[(posY-2)+y]); // Mantenemos en memoria la linea antes del cambio
             mover(-1, 0);
             
-            /* Algoritmo de eliminación del caracter de la posición del cursor sobre la cadena ((posX-1)+x)*/
+            // Algoritmo de eliminación del caracter de la posición del cursor sobre la cadena ((posX-1)+x)
             int i = 0;
             while(*aux != '\0'){
                 if(i == (posX-1)+x){
@@ -267,7 +268,7 @@ void eliminarCaracter(){
             strcpy(aux, data[(posY-2)+y]); // Mantenemos en memoria la linea antes del cambio
             posX -=1 ;
             
-            /* Algoritmo de eliminación del caracter de la posición del cursor sobre la cadena ((posX-1)+x)*/
+            // Algoritmo de eliminación del caracter de la posición del cursor sobre la cadena ((posX-1)+x)
             int i = 0;
             while(*aux != '\0'){
                 if(i == (posX-1)+x){

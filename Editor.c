@@ -154,14 +154,14 @@ int abrirArchivo (char *direccion){
             saltoLinea();            
         }
 
-        else if(key = 27){ // Escritura de las lineas que se tienen en memoria
+        else if(key = 27){ // Escritura de las lineas que se tienen en memoria            
+            escritura();
             // Declaramos el arreglo para la lectura de todo el archivo
             for(int i=0; i < 100; i++){
                 data[i] = (char*)malloc(10000*sizeof(char)); 
             }
             direccionArchivo = (char *) malloc(100*sizeof(char));
 
-            escritura();
             lectura();
         }
 
