@@ -180,7 +180,7 @@ int abrirArchivo (char *direccion){
     return 0;
 }
 
-int main(){
-    abrirArchivo("ejemplo.txt");   
+/*int main(){
+    //abrirArchivo("ejemplo.txt");   
     return 0; 
-}
+}*/
