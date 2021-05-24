@@ -39,6 +39,7 @@ void imprimeTexto(){
     }
 }
 void insertarCaracter(char caracter){
+    char *aux = &data[(posY-2)+y];
 
 }
 
@@ -88,10 +89,9 @@ int abrirArchivo (char *direccion){
             posX = 1;
             posY = 2;
         }
-        else if (key == ' '){ // Tecla espacio
-            insertarCaracter();
+        else if (key >= 32 && key<= 255){ // Tecla espacio
+            insertarCaracter(key);
         }
-
         move(posY, posX);
         imprimeTexto();
         refresh();    
