@@ -231,24 +231,26 @@ void eliminarSalto(){
     char*aux = strtok(data[(posY-2)+y-1], "\n");
 
     // Algoritmo de concatenación de lineas por eliminación de salto  
-    strcat(aux, data[(posY-2)+y]);
+    if(aux_tam > 0){
+        strcat(aux, data[(posY-2)+y]);
+        strcpy(data[(posY-2)+y-1], aux);
 
-    strcpy(data[(posY-2)+y-1], aux);
 
+        
+        /*subimos el resto de lineas*/
+        subirLineas((posY-2)+y);
+        lineasArchivo--;    
 
-    
-    /*subimos el resto de lineas*/
-    subirLineas((posY-2)+y);
-    lineasArchivo--;    
+        // Hacemos un recorrido hasta el final de la linea anterior
+        mover(0, -1);
+        comprobarScroll(0, -1);
 
-    // Hacemos un recorrido hasta el final de la linea anterior
-    mover(0, -1);
-    comprobarScroll(0, -1);
-
-    while( ((posX-1)+x) + 1 <=  aux_tam){
-        mover(1, 0);
-        comprobarScroll(1, 0);
+        while( ((posX-1)+x) + 1 <=  aux_tam){
+            mover(1, 0);
+            comprobarScroll(1, 0);
+        }
     }
+    
 }
 
 
