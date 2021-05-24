@@ -15,28 +15,32 @@ void lectura(){
 
 /* Función dedicada a imprimir todo el texto en pantalla*/
 void imprimeTexto(){
-    move(posY, posX);
+    mostrarHeaderFooter();
+    move(2, 1);
 
-    for(int espY = posY; espY<= maxY-5; espY++){ // No se debe desbordar horizontalmente
+    for(int espY = 2; espY<= maxY-5; espY++){ // No se debe desbordar horizontalmente
         /* Obtenemos una copia*/
-        char *aux = data[y + (espY-posY)];
+        char *aux = data[y + (espY-2)];
 
         // Para dejar el puntero en la posicion correcta en x (para scroll)
         for(int i=0; i <x; i++){
             aux++;
         }
 
-        for(int espX = posX; espX <= maxX-2; espX++){ // No se debe desbordar verticalmente
+        for(int espX = 1; espX <= maxX-2; espX++){ // No se debe desbordar verticalmente
 
-            if(*aux != 00){
+            if(*aux != 00){ // Si no está vacía la cadena
                 move(espY, espX);
                 printw("%c", *aux);
                 aux++;
-            }            
+            }    
         }
+        
     }
 }
+void insertarCaracter(char caracter){
 
+}
 
 int abrirArchivo (char *direccion){
     /* Creamos ventana y sus elementos*/
@@ -46,7 +50,7 @@ int abrirArchivo (char *direccion){
     posX = 1;
     posY = 2;
     /* Donde partira a imprimir respecto al archivo*/
-    x = 1;
+    x = 0;
     y = 0;
 
     /* Leemos y mostramos el archivo */
@@ -61,15 +65,33 @@ int abrirArchivo (char *direccion){
         noecho();
         keypad(stdscr, true);
         int key = getch();
-        //printw(" l%dl", key);
+        move(10, 10);
 
-        if (key == KEY_LEFT){
+        if (key == KEY_LEFT){ // Flecha izquierda
             mover(-1, 0);
             comprobarScroll(-1, 0);
         }
-        else if (key == KEY_RIGHT){
+        else if (key == KEY_RIGHT){ // Flecha derecha
             mover(1, 0);
+            comprobarScroll(1, 0);
         }
+        else if (key == KEY_UP){ // Flecha arriba       
+            comprobarScroll(0, -1);
+        }
+        else if (key == KEY_DOWN){ // Flecha abajo
+            mover(0, 1);
+            comprobarScroll(0, 1);
+        }
+        else if (key == 262){ // Tecla inicio
+            x = 0;
+            y = 0;
+            posX = 1;
+            posY = 2;
+        }
+        else if (key == ' '){ // Tecla espacio
+            insertarCaracter();
+        }
+
         move(posY, posX);
         imprimeTexto();
         refresh();    

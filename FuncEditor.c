@@ -87,6 +87,7 @@ int mostrarHeaderFooter(){
     move(maxY-2, 30);
     printw("Ctrl + o para volver a menu");
 
+    move(2, 1);
     refresh();
     return 0;
 }
@@ -105,7 +106,20 @@ void comprobarScroll(int horizontal, int vertical){
             x--;
         }
     }
-    else if(posX + horizontal >= maxX-1){ // Se dara scroll a la izquierda
+    else if(posX + horizontal >= maxX-1){ // Se dara scroll a la derecha
+        x++;
+    }
+    
+    if(posY + vertical < 2){ // Se dara scroll hacia arriba
+        if(y > 0){
+            y--;
+        }
+    }
+    else if(posY + vertical >= maxY-4){ // Se dara scroll hacia abajo
+        if(lineasArchivo - y >  maxY-6){
+            y++;
+        }
         
     }
+
 }
