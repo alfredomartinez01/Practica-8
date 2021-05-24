@@ -92,6 +92,14 @@ int abrirArchivo (char *direccion){
         else if (key == KEY_UP){ // Flecha arriba   
             mover(0, -1);    
             comprobarScroll(0, -1);
+            if(tamanoLinea((posY-2)+y) < tamanoLinea((posY-2)+y+1) && posX+1 > tamanoLinea((posY-2)+y)){ // Condiciones para saber donde se coloca el cursor, puede hacer retorno de carro en la siguiente linea
+                    x = 0;
+                    posX = 1;
+                    while( ((posX-1)+x) + 1 <= tamanoLinea((posY-2)+y)){ // Se va al final de la linea
+                        mover(1, 0);
+                        comprobarScroll(1, 0);
+                    }
+            }
         }
         else if (key == KEY_DOWN){ // Flecha abajo
             if( (posY-2)+y + 1 < lineasArchivo-1){  // Comprueba que la linea siguiente sí sea una linea existente              
