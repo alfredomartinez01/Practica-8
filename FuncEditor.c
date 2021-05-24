@@ -183,7 +183,7 @@ void saltoLinea(){
 
     char aux[100000];
     strcpy(aux, data[(posY-2)+y]); // Mantenemos en memoria la linea antes del cambio
-
+    
     /*Bajamos el resto de lineas*/
     lineasArchivo++;
     bajarLineas((posY-2)+ y+1);
@@ -202,9 +202,18 @@ void saltoLinea(){
         linea_nueva[j] = aux[i];    
         j++;
     }
+
+    if(tamanoLinea((posY-2)+ y) > 0 && posX-x > 1){ // Si la linea tiene caracteres y ademas está adelante del primer caracter
+        strcpy(data[(posY-2)+y], linea_original);
+    }
+    else{
+        strcpy(data[(posY-2)+y], "\n");
+        move(15, 10);
+        printw("S");
+    }
     
-    strcpy(data[(posY-2)+y], linea_original);
     strcpy(data[(posY-2)+y+1], linea_nueva);
+    
     
     // Hacemos retorno de carro en la siguiente linea
     if( (posY-2)+y + 1 < lineasArchivo){  // Comprueba que la linea siguiente sí sea una linea existente              
@@ -216,15 +225,17 @@ void saltoLinea(){
 }
 
 void eliminarSalto(){
-    char aux[100000];
-    strcpy(aux, data[(posY-2)+y-1]); // Mantenemos en memoria la linea antes del cambio
     int aux_tam = tamanoLinea((posY-2)+y-1);
+
+    // Reparamos cadena por si tiene algun salto indebido
+    char*aux = strtok(data[(posY-2)+y-1], "\n");
 
     // Algoritmo de concatenación de lineas por eliminación de salto  
     strcat(aux, data[(posY-2)+y]);
 
     strcpy(data[(posY-2)+y-1], aux);
-   
+
+
     
     /*subimos el resto de lineas*/
     subirLineas((posY-2)+y);

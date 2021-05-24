@@ -16,8 +16,12 @@ void lectura(){
 /* Funcion dedicada a la escritura del archivo*/
 void escritura(){
     FILE *archivo = fopen(direccionArchivo, "w");
+    char aux[100000];
+
     for(int i = 0; i < lineasArchivo; i++){
-        fputs(data[lineasArchivo], archivo);
+        /* Formateando lineas*/
+        strcpy(aux, data[i]); // Mantenemos en memoria la linea antes del cambio
+        fputs(aux, archivo);
     }
     fclose(archivo);
 }
@@ -51,7 +55,7 @@ void imprimeTexto(){
 int abrirArchivo (char *direccion){
     /* Creamos ventana y sus elementos*/
     crearVentana();
-    mostrarHeaderFooter();
+    //mostrarHeaderFooter();
     /* Donde partira a imprimir respecto a la ventana*/
     posX = 1;
     posY = 2;
@@ -102,7 +106,7 @@ int abrirArchivo (char *direccion){
             }
         }
         else if (key == KEY_DOWN){ // Flecha abajo
-            if( (posY-2)+y + 1 < lineasArchivo){  // Comprueba que la linea siguiente sí sea una linea existente              
+            if( (posY-2)+y + 1 < lineasArchivo-1){  // Comprueba que la linea siguiente sí sea una linea existente              
                 mover(0, 1);
                 comprobarScroll(0, 1);
 
@@ -124,6 +128,11 @@ int abrirArchivo (char *direccion){
             while( ((posX-1)+x) + 1 <= tamanoLinea((posY-2)+y)){
                 mover(1, 0);
                 comprobarScroll(1, 0);
+            }
+        }
+        else if (key == 9){ // Tabulador
+            for(int i = 0; i <4; i++){
+                insertarCaracter(' ');
             }
         }
         else if (key == 263){ // Algun caracter a eliminar
@@ -155,13 +164,11 @@ int abrirArchivo (char *direccion){
         }
 
         else if(key = 27){ // Escritura de las lineas que se tienen en memoria            
-            escritura();
-            // Declaramos el arreglo para la lectura de todo el archivo
-            for(int i=0; i < 100; i++){
-                data[i] = (char*)malloc(10000*sizeof(char)); 
-            }
-            direccionArchivo = (char *) malloc(100*sizeof(char));
-
+            escritura(); 
+            posX = 1;
+            posY = 2;  
+            x = 0;
+            y = 0;
             lectura();
         }
 
