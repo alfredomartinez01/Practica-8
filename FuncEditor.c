@@ -74,14 +74,13 @@ int mostrarHeaderFooter(){
     }
 
     move(maxY-3, 1);
-    printw("Ctrl + g para guardar");
+    printw("ESC para guardar");
     move(maxY-2, 1);
     printw("Ctrl + o para volver a menu");
 
     move(maxY-3, 30);
     printw("Ctrl + c para para salir");
-    move(maxY-2, 30);
-    printw("Ctrl + o para volver a menu");
+    
 
     move(2, 1);
     refresh();
