@@ -33,7 +33,6 @@ char *choices[] = {
                        "Abrir Archivo",
                        "Eliminar Archivo",
 			"Moverse",
-			"Salir",
                   };
 
 int main()
@@ -86,9 +85,6 @@ int main()
 			case KEY_UP:
 				menu_driver(my_menu, REQ_UP_ITEM);
 				break;
-			case KEY_LEFT:
-				volverMenu();
-				break;	
 				
 			case 10: /* Enter */
 				move(20, 0);
@@ -112,6 +108,15 @@ int main()
 				else if(strcmp(item_name(current_item(my_menu)), "Abrir Archivo")==0){
 					clear();
 					getNombreArchivo();
+					
+					init_pair(1, COLOR_MAGENTA, COLOR_WHITE);
+					init_pair(2, COLOR_BLUE, COLOR_WHITE);
+					init_pair(3, COLOR_MAGENTA, COLOR_MAGENTA);
+					bkgd(COLOR_PAIR(1));
+					set_menu_fore(my_menu, COLOR_PAIR(1) | A_REVERSE); //SUBRAYADO
+					set_menu_back(my_menu, COLOR_PAIR(2)); //TEXTO
+					set_menu_grey(my_menu, COLOR_PAIR(3)); //FONDO
+					
 					volverMenu();
 					menu_driver(my_menu, REQ_UP_ITEM);
 					menu_driver(my_menu, REQ_DOWN_ITEM);
@@ -159,7 +164,7 @@ void footerMenu(){
 }
 
 void volverMenu(){
-	printw("Volviendo al menú...");
+	printw("\nVolviendo al menú...");
 	refresh();
 	sleep(3);
 	clear();
