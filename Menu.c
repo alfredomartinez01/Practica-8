@@ -50,6 +50,10 @@ int main()
         cbreak();
         noecho();
 	keypad(stdscr, TRUE);
+	init_pair(1, COLOR_MAGENTA, COLOR_WHITE);
+	init_pair(2, COLOR_BLUE, COLOR_WHITE);
+	init_pair(3, COLOR_MAGENTA, COLOR_MAGENTA);
+	bkgd(COLOR_PAIR(1));
 
 	/* Initialize items */
         n_choices = ARRAY_SIZE(choices);
@@ -63,6 +67,11 @@ int main()
 
 	/* Set menu mark to the string " ~ " */
         set_menu_mark(my_menu, " ~ ");
+
+	/* Set fore ground and back ground of the menu */
+	set_menu_fore(my_menu, COLOR_PAIR(1) | A_REVERSE); //SUBRAYADO
+	set_menu_back(my_menu, COLOR_PAIR(2)); //TEXTO
+	set_menu_grey(my_menu, COLOR_PAIR(3)); //FONDO
 
 	/* Post the menu */
 	footerMenu();
