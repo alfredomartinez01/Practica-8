@@ -68,6 +68,7 @@ int abrirArchivo (char *direccion){
     strcpy(direccionArchivo, direccion);
     lectura ();
     imprimeTexto();
+    refresh();
 
     while(1){
         move(posY, posX);
