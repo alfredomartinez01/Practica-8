@@ -243,7 +243,13 @@ void getNombreArchivo(){
 	printw("\n\nEscribe el nombre del archivo: ");
 	getnstr(nombre, NOM_MAX);
 	char *nom = strcat(nombre, ".txt");
-	abrirArchivo(nom);
+	if(fopen(nom, "r") == NULL){
+		printw("Archivo no encontrado\n");
+	}
+	else{
+		abrirArchivo(nom);
+	}
+	
 }
 
 void eliminarArchivo(){

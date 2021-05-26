@@ -1,4 +1,5 @@
 /* Interfaz editor*/
+
 #include "FuncEditor.c"
 
 /* Funcion dedicada a la lectura del archivo y almacenamiento en memoria*/
@@ -68,15 +69,12 @@ int abrirArchivo (char *direccion){
     lectura ();
     imprimeTexto();
 
-    int flag = 1;
-    while(flag){
+    while(1){
         move(posY, posX);
 
         noecho();
         keypad(stdscr, true);
         unsigned key = getch();
-        //move(maxY-2, maxY-9);
-        //printw("%d", key);
 
         /* NOTA:(posX-1)+x  es la posicion sobre el cadena de caracteres respecto al cursor en x
                 (posY-2)+y  es la posicion sobre la cadena de caracteres respecto al cursor en y*/
@@ -163,13 +161,21 @@ int abrirArchivo (char *direccion){
             saltoLinea();            
         }
 
-        else if(key = 27){ // Escritura de las lineas que se tienen en memoria            
-            escritura(); 
-            posX = 1;
-            posY = 2;  
-            x = 0;
-            y = 0;
-            lectura();
+        else if(key = 27){ // Escritura de las lineas que se tienen en memoria (esc)          
+            key = getch();
+            if(key == 27){
+                clear();
+                endwin();
+                return 1; // Manda señal para cerrar todo
+            }
+            else if(key == 10){
+                escritura(); 
+                posX = 1;
+                posY = 2;  
+                x = 0;
+                y = 0;
+                lectura();
+            }
         }
 
         imprimeTexto();
@@ -179,8 +185,3 @@ int abrirArchivo (char *direccion){
     endwin();
     return 0;
 }
-
-/*int main(){
-    //abrirArchivo("ejemplo.txt");   
-    return 0; 
-}*/

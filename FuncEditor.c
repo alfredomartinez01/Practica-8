@@ -3,12 +3,8 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
-# include <pthread.h> 
-# include <unistd.h> 
-# include <time.h>
 # include<sys/ipc.h>
 # include<sys/shm.h>
-#include <signal.h> 
 
 /* Teclas para controlar al mono*/
 # define ESCAPE 27
@@ -74,12 +70,12 @@ int mostrarHeaderFooter(){
     }
 
     move(maxY-3, 1);
-    printw("ESC para guardar");
+    printw("ESC + ENTER para guardar");
     move(maxY-2, 1);
-    printw("Ctrl + o para volver a menu");
+    printw("ESC + ESC para volver a menu");
 
     move(maxY-3, 30);
-    printw("Ctrl + c para para salir");
+    printw("Ctrl + c para para salir sin guardar");
     
 
     move(2, 1);
